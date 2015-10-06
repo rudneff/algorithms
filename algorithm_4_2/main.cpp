@@ -7,7 +7,7 @@ public:
 	Dequeue();
 	~Dequeue() {delete [] buffer;}
 	void push_back(int data);
-	int pop_back();
+	const int* pop_back();
 	inline bool isEmpty() {return size == 0;}
 private:
 	void increase_capacity();
@@ -26,7 +26,17 @@ Dequeue::Dequeue() {
 
 void Dequeue::increase_capacity() {
 	int *temp = new int[capacity*2];
-	std::memcpy(temp, buffer, sizeof(int)*size);
+	if (head <= tail) {
+		std::memcpy(temp, buffer, sizeof(int)*size);
+		head = 0;
+		tail = size;
+	}
+	else {
+		std::memcpy(temp, buffer, sizeof(int)*tail);
+		std::memcpy(temp+(2*capacity-size+tail), buffer+capacity-size+tail, sizeof(int)*(size-tail));
+		capacity = 2*capacity;
+		head = capacity - size + tail;
+	}
 	delete [] buffer;
 	buffer = temp;
 }
@@ -42,6 +52,9 @@ void Dequeue::push_back(int data) {
 const int* Dequeue::pop_back() {
 	if(!isEmpty()) {
 		return null;
+	}
+	else {
+
 	}
 }
 
