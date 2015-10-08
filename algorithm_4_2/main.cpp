@@ -8,10 +8,12 @@ public:
 	~Dequeue() {delete [] buffer;}
 	void push_back(int data);
 	const int* pop_back();
-	inline bool isEmpty() {return size == 0;}
+	void push_front(int data);
+	const int* pop_front();
+	inline bool is_empty() {return size == 0;}
 private:
 	void increase_capacity();
-	inline bool isFull() {return size == capacity;}
+	inline bool is_full() {return size == capacity;}
 	int *buffer;
 	int size;
 	int capacity;
@@ -19,9 +21,11 @@ private:
 };
 
 Dequeue::Dequeue() {
-	capacity = 100;
+	capacity = 5;
 	buffer = new int[capacity];
-	size, head, tail = 0;
+	size = 0;
+	head = 0;
+	tail = 0;
 }
 
 void Dequeue::increase_capacity() {
@@ -42,24 +46,107 @@ void Dequeue::increase_capacity() {
 }
 
 void Dequeue::push_back(int data) {
-	if(isFull()) {
+	if(is_full()) {
 		increase_capacity();
 	}
 	buffer[tail] = data;
-	++tail;
+	if(tail != capacity - 1) {
+		++tail;
+	}
+	else {
+		tail = 0;
+	}
+	++size;
 }
 
 const int* Dequeue::pop_back() {
-	if(!isEmpty()) {
-		return null;
+	if(is_empty()) {
+		return NULL;
 	}
 	else {
+		int *res = new int;
+		if (tail != 0) {
+			--tail;
+		}
+		else {
+			tail = capacity - 1;
+		}
+		*res = buffer[tail];
+		return res;
+	}
+}
 
+void Dequeue::push_front(int data) {
+	if(is_full()) {
+		increase_capacity();
+	}
+	if(head != 0) {
+		--head;
+	}
+	else
+	{
+		head = capacity - 1;
+	}
+	buffer[head] = data;
+	++size;
+}
+
+const int* Dequeue::pop_front() {
+	if(is_empty()){
+		return NULL;
+	}
+	else {
+		int* res = new int;
+		*res = buffer[head];
+		if (head != (capacity - 1)) {
+			++head;
+		}
+		else {
+			head = 0;
+		}
+		return res;
 	}
 }
 
 int main()
 {
-	cout << "Hello, World!" << endl;
+	int number_moves;
+	cin >> number_moves;
+	string answer = "YES";
+	Dequeue* deq = new Dequeue();
+	for (int i = 0; i < number_moves; ++i) {
+		int cmd, data;
+		cin >> cmd >> data;
+		switch (cmd) {
+			case 1: {
+				deq->push_front(data);
+				break;
+			}
+
+			case 2: {
+				const int* temp = deq->pop_front();
+				if ((!temp && data != -1) || (temp && *temp != data)) {
+					answer = "NO";
+				}
+				delete temp;
+				break;
+			}
+
+			case 3: {
+				deq->push_back(data);
+				break;
+			}
+
+			case 4: {
+				const int* temp = deq->pop_back();
+				if((!temp && data != -1) || (temp && *temp != data)) {
+					answer = "NO";
+				}
+				delete temp;
+				break;
+			}
+		}
+	}
+	cout << answer << endl;
 	return 0;
 }
