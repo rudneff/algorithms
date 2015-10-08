@@ -30,14 +30,12 @@ Dequeue::Dequeue() {
 
 void Dequeue::increase_capacity() {
 	int *temp = new int[capacity*2];
-	if (head <= tail) {
-		std::memcpy(temp, buffer, sizeof(int)*size);
-		head = 0;
-		tail = size;
+	if ((head < tail) || (size == 0)) {
+		std::memcpy(temp + head, buffer, sizeof(int)*size);
 	}
 	else {
 		std::memcpy(temp, buffer, sizeof(int)*tail);
-		std::memcpy(temp+(2*capacity-size+tail), buffer+capacity-size+tail, sizeof(int)*(size-tail));
+		std::memcpy(temp+(2*capacity-size+tail), buffer+head, sizeof(int)*(size-tail));
 		capacity = 2*capacity;
 		head = capacity - size + tail;
 	}
@@ -72,6 +70,7 @@ const int* Dequeue::pop_back() {
 			tail = capacity - 1;
 		}
 		*res = buffer[tail];
+		--size;
 		return res;
 	}
 }
@@ -104,6 +103,7 @@ const int* Dequeue::pop_front() {
 		else {
 			head = 0;
 		}
+		--size;
 		return res;
 	}
 }
