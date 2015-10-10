@@ -30,7 +30,8 @@ int main()
 	for (int i = 0; i < m; ++i) {
 		cout << second_arr[i] << ' ';
 	}
-
+	delete [] first_arr;
+	delete [] second_arr;
 	return 0;
 }
 
