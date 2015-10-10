@@ -7,9 +7,9 @@ public:
 	Dequeue();
 	~Dequeue() {delete [] buffer;}
 	void push_back(int data);
-	const int* pop_back();
+	int pop_back();
 	void push_front(int data);
-	const int* pop_front();
+	int pop_front();
 	inline bool is_empty() {return size == 0;}
 private:
 	void increase_capacity();
@@ -57,19 +57,19 @@ void Dequeue::push_back(int data) {
 	++size;
 }
 
-const int* Dequeue::pop_back() {
+int Dequeue::pop_back() {
 	if(is_empty()) {
-		return NULL;
+		return -1;
 	}
 	else {
-		int *res = new int;
+		int res;
 		if (tail != 0) {
 			--tail;
 		}
 		else {
 			tail = capacity - 1;
 		}
-		*res = buffer[tail];
+		res = buffer[tail];
 		--size;
 		return res;
 	}
@@ -90,13 +90,13 @@ void Dequeue::push_front(int data) {
 	++size;
 }
 
-const int* Dequeue::pop_front() {
+int Dequeue::pop_front() {
 	if(is_empty()){
-		return NULL;
+		return -1;
 	}
 	else {
-		int* res = new int;
-		*res = buffer[head];
+		int res;
+		res = buffer[head];
 		if (head != (capacity - 1)) {
 			++head;
 		}
@@ -124,11 +124,10 @@ int main()
 			}
 
 			case 2: {
-				const int* temp = deq->pop_front();
-				if ((!temp && data != -1) || (temp && *temp != data)) {
+				const int temp = deq->pop_front();
+				if (temp != data) {
 					answer = "NO";
 				}
-				delete temp;
 				break;
 			}
 
@@ -138,15 +137,15 @@ int main()
 			}
 
 			case 4: {
-				const int* temp = deq->pop_back();
-				if((!temp && data != -1) || (temp && *temp != data)) {
+				const int temp = deq->pop_back();
+				if(temp != data) {
 					answer = "NO";
 				}
-				delete temp;
 				break;
 			}
 		}
 	}
 	cout << answer << endl;
+	delete deq;
 	return 0;
 }
