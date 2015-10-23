@@ -28,3 +28,9 @@
 *.app
 # Jetbrains
 .idea*
+
+#Cmake
+CMakeCache*
+cmake_install*
+Makefile
+CMakeFiles
