@@ -17,7 +17,7 @@ public:
 	~List() { delete_all(); }
 
 	void add_first(Node *node);
-	const Node*get_first() const;
+	const Node* get_first() const;
 	void delete_first();
 	void delete_all();
 	bool is_empty() const {return first == NULL;}
