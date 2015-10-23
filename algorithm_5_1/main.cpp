@@ -1,6 +1,8 @@
 #include <iostream>
-//Реализация стека при помощи односвязного списка
-using namespace std;
+#include <stdexcept>
+
+//Реализация стека на основе односвязного списка
+
 struct Node {
 	char data;
 	Node* next;
@@ -18,7 +20,7 @@ public:
 	const Node*get_first() const;
 	void delete_first();
 	void delete_all();
-	bool is_empty() const {return first == NULL;}; //метод не будет менять объект (для более хорошего понимания кода)
+	bool is_empty() const {return first == NULL;}
 
 private:
 	Node* first;
@@ -33,10 +35,6 @@ inline void List::add_first(Node *node) {
 		first = node;
 	}
 }
-
-/*inline Node* List::get_first(){
-    пишем внутри класса, так как метод маленький
-}*/
 
 inline void List::delete_first(){
 	if(!is_empty()) {
@@ -88,28 +86,58 @@ char Stack::pop(){
 	}
 }
 
+void push_singles(Stack *stack, const char ch);
+void write_back(Stack *stack, std::string &str);
+bool write_prev(Stack *stack, std::string &str);
 
 int main() {
 	char ch;
 	std::string str = "";
 	Stack* stack = new Stack();
-	while(cin >> ch) {
+	while(std::cin >> ch) {
 		str += ch;
-		if(!(stack->is_empty())) {
-			char temp = stack->pop();
-			if (!(ch == 41 && temp == 40 || ch == 93 && temp == 91 || ch == 125 && temp == 123)) {
-				stack->push(temp);
-				stack->push(ch);
-			}
-		}
-		else {
+        // добавляем в стек одиночные скобки
+		push_singles(stack, ch);
+	}
+
+    //дописываем в конец
+	write_back(stack, str);
+
+    std::string prefix = "";
+    //дописываем в начало
+	if (write_prev(stack, prefix)) {
+        std::cout << prefix << str << std::endl;
+	}
+	else {
+        std::cout << "IMPOSSIBLE" << std::endl;
+	}
+	delete stack;
+	return 0;
+
+}
+
+void push_singles(Stack *stack, const char ch){
+    if(!stack) {
+        throw std::invalid_argument("Null pointer argument.");
+    }
+	if(!(stack->is_empty())) {
+		char temp = stack->pop();
+		if (!(ch == 41 && temp == 40 || ch == 93 && temp == 91 || ch == 125 && temp == 123)) {
+			stack->push(temp);
 			stack->push(ch);
 		}
 	}
+	else {
+		stack->push(ch);
+	}
+}
 
+void write_back(Stack* stack, std::string &str) {
+    if(!stack) {
+        throw std::invalid_argument("Null pointer argument.");
+    }
 	char poped = 0;
 	while ((poped = stack->pop()) == 40 || poped == 91 || poped == 123) {
-
 		switch (poped) {
 			case 40: {
 				str.push_back(char(41));
@@ -129,9 +157,13 @@ int main() {
 	if(poped != 0) {
 		stack->push(poped);
 	}
+}
 
-	std::string prefix = "";
-
+bool write_prev(Stack* stack, std::string &prefix) {
+    if(!stack) {
+        throw std::invalid_argument("Null pointer argument.");
+    }
+	char poped = 0;
 	while ((poped = stack->pop()) == 41 || poped == 93 || poped == 125) {
 		switch (poped) {
 			case 41: {
@@ -151,13 +183,13 @@ int main() {
 		poped = 0;
 	}
 
-	if (stack->is_empty() && poped == 0) {
-		cout << prefix << str << endl;
-	}
-	else {
-		cout << "IMPOSSIBLE" << endl;
-	}
-	delete stack;
-	return 0;
+    if(stack->is_empty() and poped == 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 
 }

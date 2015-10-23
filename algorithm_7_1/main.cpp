@@ -5,8 +5,7 @@
 struct Athlete {
 	int mas_;
 	int str_;
-	Athlete(int mas, int str):mas_(mas), str_(str){};
-
+	Athlete(int mas, int str):mas_(mas), str_(str){}
 	bool operator<(const Athlete &b) const {
 		return (mas_ + str_) < (b.mas_+b.str_);
 	}
